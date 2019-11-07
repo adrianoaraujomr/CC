@@ -5,5 +5,6 @@ from lex import *
 
 path = "../Codes/soma.pt"
 
-lex = Tokenizer(path)
-lex.run()
+STDiagram("./Tables/t_afd.csv")
+#lex = Tokenizer(path)
+#lex.run()

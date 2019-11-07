@@ -9,7 +9,32 @@ class Token():
 
 class STDiagram():
 	def __init__(self,afd):
-		
+		fd      = open(afd,"r")
+		lines   = fd.readlines()
+		self.tt = [] # transition table
+		for l in lines:
+			aux = {}
+			l   = l.strip("\n")
+			l   = l.split(";")
+			i   = 1
+
+			for j in range(39,46):
+				aux[chr(j)] = int(l[i])
+				i += 1
+			for j in range(48,58):
+				aux[chr(j)] = int(l[i])
+				i += 1
+			for j in range(59,63):
+				aux[chr(j)] = int(l[i])
+				i += 1
+			for j in range(91,94):
+				aux[chr(j)] = int(l[i])
+				i += 1
+			for j in range(97,123):
+				aux[chr(j)] = int(l[i])
+				i += 1
+			print(aux)
+			break
 
 class Tokenizer():
 	def __init__(self,file_name):
