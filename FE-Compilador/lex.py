@@ -33,20 +33,25 @@ class STDiagram():
 			for j in range(97,123):
 				aux[chr(j)] = int(l[i])
 				i += 1
-			print(aux)
-			break
+			self.tt.append(aux)
+#		print(self.tt[0])
+#		print(self.tt[0]['0'])
+#		print(self.tt[0]['-'])
+
 
 class Tokenizer():
 	def __init__(self,file_name):
-		self.source_code = file_name
-		self.buffer      = []
+		self.source_code      = file_name
+		self.buffer           = []
+		self.transition_table = STDiagram("./Tables/t_afd.csv")
 
 	def run(self):
 		fd          = open(self.source_code,"r")
 		self.buffer = fd.read()
 
-		line = 0
-		col  = 0
+		state = 0
+		line  = 0
+		col   = 0
 
 		for i in self.buffer:
 		# Ignorar espaços tabs e new lines
@@ -57,7 +62,10 @@ class Tokenizer():
 				col   = 0
 				continue
 		# Usar diagrama para determinar estados
+			new_state = self.transition_table[state][i]
+			print(state,"|",new_state,"|",i)
 			print(i," [",line,";",col,"]")
 			col += 1
+
 
 
