@@ -1,5 +1,18 @@
 #!/usr/bin/python3
 
+print("  ",end=";")
+for j in range(39,46):
+	print(chr(j),"",end=";")
+for j in range(48,58):
+	print(chr(j),"",end=";")
+for j in range(59,63):
+	print(chr(j),"",end=";")
+for j in range(91,94):
+	print(chr(j),"",end=";")
+for j in range(97,123):
+	print(chr(j),"",end=";")
+print()
+
 for i in range(67):
 	print(i,end=";")
 	for j in range(39,46):
@@ -9,7 +22,6 @@ for i in range(67):
 			print(36,end=";")
 		else :
 			print(-1,end=";")
-#		print(chr(j),end=";")
 	for j in range(48,58):
 		if   ((i == 0) or (i == 8) or (i == 11) or (i == 14)) and (j <= 57) and (j >= 48):
 			print(11,end=";")
@@ -21,15 +33,11 @@ for i in range(67):
 			print(35,end=";")
 		else:
 			print(-1,end=";")
-#		print(chr(j),end=";")
-	for j in range(39,46):
-#		print(chr(j),end=";")
+	for j in range(59,63):
 		print(-1,end=";")
 	for j in range(91,94):
-#		print(chr(j),end=";")
 		print(-1,end=";")
 	for j in range(97,123):
-#		print(chr(j),end=";")
-		print(-1,end=";")
+		print(" 4",end=";")
 	print()
 
