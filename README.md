@@ -2,7 +2,8 @@
 
 ## AFD
 
-![AFD](./Diagramas/afd_new.jpg)
+![AFD](./Diagramas/afd_v5.jpg)
+![AFD](./Diagramas/afd_v4.jpg)
 
 ## AFND
 
