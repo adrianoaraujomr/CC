@@ -9,12 +9,11 @@
 
 ## AFD
 
-![AFD](./Diagramas/adf_v5.jpg)
-![AFD](./Diagramas/afd_v4.jpg)
+![AFD](./Diagramas/afd_v2.jpg)
 
 ## AFND
 
-![AFND](./Diagramas/afnd.jpg)
+![AFND](./Diagramas/afnd_v2.jpg)
 
 ## Palavras Reservadas
 
