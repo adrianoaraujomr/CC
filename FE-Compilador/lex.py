@@ -24,6 +24,7 @@ class STDiagram():
 		self.tt    = [] # transition table
 		self.final = {} # final states
 
+
 		for l in lines:
 			aux = {}
 			l   = l.strip("\n")
@@ -58,11 +59,23 @@ class STDiagram():
 			return True
 		return False
 
+class SBTable
+	def __init__(self):
+		self.st    = [] # simbol table
+	
+	def add_element(self,value):
+		for i in range(0,len(self.st)):
+			if self.st[i] == value:
+				return i
+		self.st.append(value)
+		return (len(self.st) - 1)
+
 class Tokenizer():
 	def __init__(self,file_name):
 		self.source_code      = file_name
 		self.buffer           = []
 		self.transition_table = STDiagram("./Tables/t_afd.csv")
+		self.symbol_table     = SBTable()
 
 	def run(self):
 		fd          = open(self.source_code,"r")
@@ -86,8 +99,14 @@ class Tokenizer():
 				if start != None:
 					if self.transition_table.is_final(state):
 						end = i
-						tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col)
-						tk.print_token()
+						if self.transition_table.final[str(state)] == "idt":
+							index = self.symbol_table.add_element(self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
+							tk = Token(self.transition_table.final[str(state)],index,line,col)
+							tk.print_token()
+						else:
+							tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col)
+							tk.print_token()
+
 #						print("1",self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
 						state  = 0
 						start  = None
