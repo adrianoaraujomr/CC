@@ -6,4 +6,5 @@ from lex import *
 path = "../Codes/soma.pt"
 
 lex = Tokenizer(path)
-lex.run()
+tks = lex.run()
+print(tks)

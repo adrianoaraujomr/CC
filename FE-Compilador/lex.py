@@ -59,7 +59,7 @@ class STDiagram():
 			return True
 		return False
 
-class SBTable
+class SBTable():
 	def __init__(self):
 		self.st    = [] # simbol table
 	
@@ -78,13 +78,14 @@ class Tokenizer():
 		self.symbol_table     = SBTable()
 
 	def run(self):
+		tokens      = []
 		fd          = open(self.source_code,"r")
 		self.buffer = fd.read()
 
 		start = None
 		end   = None
 		state = 0
-		line  = 0
+		line  = 1
 		col   = 0
 
 		for i in range(len(self.buffer) - 1):
@@ -96,16 +97,18 @@ class Tokenizer():
 			if start == None and head != " " and head != "\t" and head != "\n":
 				start = i
 			if head == " " or head == "\t":
+				col += 1
 				if start != None:
 					if self.transition_table.is_final(state):
 						end = i
+						col_start = col + 1 - (end - start)
 						if self.transition_table.final[str(state)] == "idt":
 							index = self.symbol_table.add_element(self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
-							tk = Token(self.transition_table.final[str(state)],index,line,col)
-							tk.print_token()
+							tk = Token(self.transition_table.final[str(state)],index,line,col_start)
 						else:
-							tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col)
-							tk.print_token()
+							tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,_start)
+						tokens.append(tk)
+						tk.print_token()
 
 #						print("1",self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
 						state  = 0
@@ -120,7 +123,13 @@ class Tokenizer():
 				if start != None:
 					if self.transition_table.is_final(state):
 						end = i
-						tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col)
+						col_start = col + 1 - (end - start)
+						if self.transition_table.final[str(state)] == "idt":
+							index = self.symbol_table.add_element(self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
+							tk = Token(self.transition_table.final[str(state)],index,line,col_start)
+						else:
+							tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col_start)
+						tokens.append(tk)
 						tk.print_token()
 #						print("2",self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
 						state  = 0
@@ -129,10 +138,11 @@ class Tokenizer():
 					else:
 						print("2 Error at",line,col)
 						break
+				else:
 					line += 1
 					col   = 0
-				else:
 					continue
+				
 # ----------------------------------------------------------------------------------------------------------------------------------------------------
 		# Usar diagrama para determinar estados
 #			print(state,end=" -> ")
@@ -149,7 +159,14 @@ class Tokenizer():
 			# Reconheceu o mais longo
 			if new_state == -1:
 				if end != None: # state hit final at some point
-					tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col)
+					col_start = col + 1 - (end - start)
+					if self.transition_table.final[str(state)] == "idt":
+						index = self.symbol_table.add_element(self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
+						tk = Token(self.transition_table.final[str(state)],index,line,col_start)
+						tk.print_token()
+					else:
+						tk = Token(self.transition_table.final[str(state)],self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""),line,col_start)
+					tokens.append(tk)
 					tk.print_token()
 ##					print("3",self.buffer[start:end + 1].replace(" ","").replace("\n","").replace("\t",""))
 					state  = 0
@@ -160,6 +177,4 @@ class Tokenizer():
 					print("3 Error at",line,col)
 					
 			col += 1
-
-
-
+		return tokens
