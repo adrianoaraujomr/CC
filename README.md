@@ -1,10 +1,3 @@
-# To Do
-
-* Arrumar diagramas
-* Atualizar tabela de transição
-* Coluna tabela de transição para classe token
-* Tabela de símbolos
-
 # Diagramas
 
 ## AFD
