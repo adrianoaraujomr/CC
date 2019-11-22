@@ -29,44 +29,63 @@ def print_grammar():
 		print()
 
 # Seems like its working
+# Change the exit to fit with the proc
 def first(nterm):
 	if nterm not in grammar.keys():
 		return [nterm]
+#		for xterm in grammar.keys():
+#			for derv in grammar[xterm]:
+#				for alfa in derv :
+#					if alfa[1] == nterm:
+#						return [alfa]
 	else:
 		res = []
 		for derv in grammar[nterm]:
 			if   not derv:
-				res.append(())
+				res.append(None)
 			for alfa in derv:
 				if alfa[0] != "nterm":
-					res.append(alfa)
+					res.append(alfa[1])
+#					res.append(alfa)
 					break
 				else:
 					aux = first(alfa[1])
-					if () in x:
-						res += aux	
-				# check if the 0 have void if yes go to 1
-					res += aux
-		return res
+					if None in aux:
+						res += aux
+					else:
+						res += aux
+						break
+		return list(set(res))
 
 
+# Change the exit to fit with the proc
+# Deal with duplicates
 def follow(nterm):
 	res = []
-	if nterm not in grammar.keys():
+	if    nterm not in grammar.keys():
 		return res
-	elif: nterm == "I":
-		res.append(("$","$"))
-	else:
-		res = []
-		for nterm in grammar.keys():
-			for derv in grammar[nterm]:
-				for j in len(derv):
-					if derv[j][1] == nterm:
-						if j != len(derv):
-							res += first(derv[j + 1][1])
-						if () in res or j == len(derv):
-							res += follow(nterm)
-							
+	elif nterm == "I":
+		res.append("$")
+#		res.append(("$","$"))
+	for gkeys in grammar.keys():
+#		print(gkeys)
+		for derv in grammar[gkeys]:
+#			print(derv)
+			for j in range(0,len(derv)):
+#				print(derv[j],j,nterm)
+				if derv[j][1] == nterm:
+					if j == len(derv) - 1:
+						if gkeys != nterm:
+							res += follow(gkeys)
+					else:
+						res += first(derv[j + 1][1])
+						if None in res or j == len(derv):
+							res += follow(gkeys)
+#					print(res)							
+	try:
+		res.remove(None)
+	except:
+		pass
 	return res
 
 class ListTokens():
@@ -127,7 +146,30 @@ class ACPredictible():
 		print("Error T")
 		return False
 
-#	def proc_C():
+	def proc_C():
+		if self.token.attribute() == "se":
+			self.token.next()
+			proc_CO()
+			if self.token.attribute() == "entao":
+				self.token.next()
+				proc_B()
+				proc_C()
+				return True
+			else:
+				return False
+		if self.token.attribute() == "enquanto":
+			self.token.next()
+			proc_CO()
+			proc_B()
+			proc_C()
+			return True
+		if self.token.attribute() in first("E"):
+			self.token.next()
+			proc_C()
+			return True
+
+		return True
+
 
 	def proc_CO():
 		if self.token.attribute() == "(":
@@ -140,7 +182,21 @@ class ACPredictible():
 				return True
 		return False
 
-#	def proc_E():
+	def proc_E():
+		if self.token.attribute() in first("A"):
+			proc_A()
+			if self.token.attribute() == ";":
+				self.token.next()
+				return True
+			return False
+		if self.token.attribute() in first("M"):
+			proc_M()
+			if self.token.attribute() == ";":
+				self.token.next()
+				return True
+			return False
+
+		return False
 
 	def proc_A(self):
 		if self.token.name() == "idt":

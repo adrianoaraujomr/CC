@@ -9,6 +9,7 @@ class FrontEnd():
 		self.syntax = ACPredictible()
 
 	def run(self):
+		print(follow("E"))
 		# 1 - Lexical Analyzer
 #		tks = self.lex.run()
 ##		return tks
