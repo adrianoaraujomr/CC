@@ -3,19 +3,71 @@
 from lex import Token
 
 # gram       = nterm -> [derivations]
-#grammar = {
-#"I" : [("rwd","programa"),("nterm","B")],
-#"B" : [("rwd","inicio"),("nterm","D"),("nterm","C"),("rwd","fim")],
-#"D" : [("nterm","T"),("idt","X"),("pnt",";")],
-#"T" : [("rwd","int"),("rwd","char"),("rwd","real")],
-#"C" : [],
-#"CO": [],
-#"E" : [],
-#"A" : [],
-#"M" : [],
-#"O" : [("opt","+"),("opt","-"),("opt","*"),("opt","/")],
-#}
+grammar = {
+"I" : [[("rwd","programa"),("nterm","B")]],
+"B" : [[("rwd","inicio"),("nterm","D"),("nterm","C"),("rwd","fim")]],
+"D" : [[("nterm","T"),("idt","idt"),("pnt",";")],[]],
+"T" : [[("rwd","int")],[("rwd","char")],[("rwd","real")]],
+"C" : [[("rwd","se"),("nterm","CO"),("rwd","entao"),("nterm","B"),("nterm","C")],[("rwd","enquanto"),("nterm","CO"),("nterm","B"),("nterm","C")],[("nterm","E"),("nterm","C")],[]],
+"CO": [[("pnt","("),("nterm","X"),("nterm","R"),("nterm","X"),("pnt",")")]],
+"E" : [[("nterm","A"),("pnt",";")],[("nterm","M"),("pnt",";")]],
+"A" : [[("idt","idt"),("opt","="),("nterm","X"),("pnt",";")]],
+"M" : [[("idt","idt"),("nterm","O"),("nterm","M")],[("nterm","X")]],
+"O" : [[("opt","+")],[("opt","-")],[("opt","*")],[("opt","/")]],
+"X" : [[("idt","idt")],[("cst","cst")]],
+"R" : [[("rlp","==")],[("rlp","<>")],[("rlp","<=")],[("rlp",">=")],[("rlp","<")],[("rlp",">")]]
+}
 # derivation = [(term,x),(term,y),(nterm,A),...]
+
+def print_grammar():
+	for nterm in grammar.keys():
+		print(nterm,end=" -> ")
+		for derv in grammar[nterm]:
+			for alfa in derv :
+				print(alfa[1],end=" ")
+			print("",end=" | ")
+		print()
+
+# Seems like its working
+def first(nterm):
+	if nterm not in grammar.keys():
+		return [nterm]
+	else:
+		res = []
+		for derv in grammar[nterm]:
+			if   not derv:
+				res.append(())
+			for alfa in derv:
+				if alfa[0] != "nterm":
+					res.append(alfa)
+					break
+				else:
+					aux = first(alfa[1])
+					if () in x:
+						res += aux	
+				# check if the 0 have void if yes go to 1
+					res += aux
+		return res
+
+
+def follow(nterm):
+	res = []
+	if nterm not in grammar.keys():
+		return res
+	elif: nterm == "I":
+		res.append(("$","$"))
+	else:
+		res = []
+		for nterm in grammar.keys():
+			for derv in grammar[nterm]:
+				for j in len(derv):
+					if derv[j][1] == nterm:
+						if j != len(derv):
+							res += first(derv[j + 1][1])
+						if () in res or j == len(derv):
+							res += follow(nterm)
+							
+	return res
 
 class ListTokens():
 	def __init__(self,tokens):
@@ -75,7 +127,7 @@ class ACPredictible():
 		print("Error T")
 		return False
 
-	def proc_C():
+#	def proc_C():
 
 	def proc_CO():
 		if self.token.attribute() == "(":
@@ -88,7 +140,7 @@ class ACPredictible():
 				return True
 		return False
 
-	def proc_E():
+#	def proc_E():
 
 	def proc_A(self):
 		if self.token.name() == "idt":

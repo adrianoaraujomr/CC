@@ -7,4 +7,3 @@ path = "../Codes/soma.pt"
 
 cc  = FrontEnd(path)
 tks = cc.run()
-#print(tks)

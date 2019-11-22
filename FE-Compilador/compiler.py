@@ -10,9 +10,9 @@ class FrontEnd():
 
 	def run(self):
 		# 1 - Lexical Analyzer
-		tks = self.lex.run()
-#		return tks
-		# 2 - Syntatic Analyzer
-		tre = self.syntax.run(tks)
+#		tks = self.lex.run()
+##		return tks
+#		# 2 - Syntatic Analyzer
+#		tre = self.syntax.run(tks)
 		# 3 - Semantic Analyzer
 		# 4 - IR Generator
