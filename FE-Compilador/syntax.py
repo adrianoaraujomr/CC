@@ -97,43 +97,57 @@ class ListTokens():
 		return self.tk_list[self.current].name
 
 	def attribute(self):
+		if   self.tk_list[self.current].name == "idt":
+			return "idt"
+		elif self.tk_list[self.current].name == "cst":
+			return "cst"
+
 		return self.tk_list[self.current].attribute
 
 	def next(self):
-		self.current += 1
+		if self.current < len(self.tk_list) - 1:
+			self.current += 1
 		print(self.tk_list[self.current - 1].attribute,"->",self.tk_list[self.current].attribute)
 
 class ACPredictible():
 	def proc_I(self):
+		print("I",self.token.attribute())
 		if self.token.attribute() == "programa":
 			self.token.next()
 			self.proc_B()
-			print(self.token.attribute)
 			return True
+		print("Error procedure I")
 		return False
-		print("Error I")
 
 	def proc_B(self):
+		print("B",self.token.attribute())
 		if self.token.attribute() == "inicio":
 			self.token.next()
 			self.proc_D()
-	#		self.proc_C()
+			self.proc_C()
 			if self.token.attribute() == "fim":
-				token.next()
+				self.token.next()
 				return True
-		print("Error B")
+		print(self.token.attribute())
+		print("Error procedure B")
 		return False
 
 	def proc_D(self):
-		self.proc_T()
-		if self.token.name() == "idt":
-			self.token.next()
-			if self.token.attribute() == ";":
+		print("D",self.token.attribute())
+		if self.token.attribute() in first("T"):
+			self.proc_T()
+			if self.token.name() == "idt":
 				self.token.next()
-				return True
+				if self.token.attribute() == ";":
+					self.token.next()
+					self.proc_D()
+					return True
+				print("Error procedure D")
+				return False
 		return True
 
 	def proc_T(self):
+		print("T",self.token.attribute())
 		if self.token.attribute() == "int":
 			self.token.next()
 			return True
@@ -143,35 +157,38 @@ class ACPredictible():
 		if self.token.attribute() == "real":
 			self.token.next()
 			return True
-		print("Error T")
+		print("Error procedure T")
 		return False
 
-	def proc_C():
+	def proc_C(self):
+		print("C",self.token.attribute())
 		if self.token.attribute() == "se":
 			self.token.next()
-			proc_CO()
+			self.proc_CO()
 			if self.token.attribute() == "entao":
 				self.token.next()
-				proc_B()
-				proc_C()
+				self.proc_B()
+				self.proc_C()
 				return True
 			else:
+				print("Error procedure C")
 				return False
 		if self.token.attribute() == "enquanto":
 			self.token.next()
-			proc_CO()
-			proc_B()
-			proc_C()
+			self.proc_CO()
+			self.proc_B()
+			self.proc_C()
 			return True
 		if self.token.attribute() in first("E"):
-			self.token.next()
-			proc_C()
+			self.proc_E()
+			self.proc_C()
 			return True
 
 		return True
 
 
-	def proc_CO():
+	def proc_CO(self):
+		print("CO",self.token.attribute())
 		if self.token.attribute() == "(":
 			self.token.next()
 			self.proc_X()
@@ -180,35 +197,45 @@ class ACPredictible():
 			if self.token.attribute() == ")":
 				self.token.next()
 				return True
+		print("Error procedure CO")
 		return False
 
-	def proc_E():
+	def proc_E(self):
+		print("E",self.token.attribute())
 		if self.token.attribute() in first("A"):
-			proc_A()
+			self.proc_A()
 			if self.token.attribute() == ";":
 				self.token.next()
 				return True
+			print("Error procedure E")
 			return False
 		if self.token.attribute() in first("M"):
-			proc_M()
+			self.proc_M()
 			if self.token.attribute() == ";":
 				self.token.next()
 				return True
+			print("Error procedure E")
 			return False
 
+		print("Error procedure E")
 		return False
 
 	def proc_A(self):
+		print("A",self.token.attribute())
 		if self.token.name() == "idt":
 			self.token.next()
 			if self.token.attribute() == "=":
 				self.token.next()
 				self.prox_X()
-				if self.token.attribute() == ";":
-					self.token.next()
-					return True
+#				if self.token.attribute() == ";":
+#					self.token.next()
+				return True
+		print("Error procedure A")
+		return False
+
 
 	def proc_M(self):
+		print("M",self.token.attribute())
 		if self.token.name() == "idt":
 			self.token.next()
 			self.proc_O()
@@ -217,18 +244,22 @@ class ACPredictible():
 		else:
 			self.proc_X()
 			return True
+		print("Error procedure M")
 		return False
 
 	def prox_X(self):
+		print("X",self.token.attribute())
 		if self.token.name() == "idt":
 			self.token.next()
 			return True
 		if self.token.name() == "cst":
 			self.token.next()
 			return True
+		print("Error procedure X")
 		return False
 
 	def proc_O(self):
+		print("O",self.token.attribute())
 		if self.token.attribute() == "+":
 			self.token.next()
 			return True
@@ -241,9 +272,11 @@ class ACPredictible():
 		if self.token.attribute() == "/":
 			self.token.next()
 			return True
+		print("Error procedure O")
 		return False
 
 	def proc_R(self):
+		print("R",self.token.attribute())
 		if self.token.attribute() == "==":
 			self.token.next()
 			return True
@@ -262,9 +295,11 @@ class ACPredictible():
 		if self.token.attribute() == "<":
 			self.token.next()
 			return True
+		print("Error procedure R")
 		return False
 
 	def run(self,tokens):
+		print("\nSyntax Analyzer :\n")
 		self.token = ListTokens(tokens)
 		self.proc_I()
 

@@ -9,11 +9,9 @@ class FrontEnd():
 		self.syntax = ACPredictible()
 
 	def run(self):
-		print(follow("E"))
 		# 1 - Lexical Analyzer
-#		tks = self.lex.run()
-##		return tks
+		tks = self.lex.run()
 #		# 2 - Syntatic Analyzer
-#		tre = self.syntax.run(tks)
+		tre = self.syntax.run(tks)
 		# 3 - Semantic Analyzer
 		# 4 - IR Generator
