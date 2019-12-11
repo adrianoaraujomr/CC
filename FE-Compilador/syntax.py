@@ -50,13 +50,23 @@ term = {
 "$"        : " ",
 }
 
-def print_table_line(nterm) :
+def print_table_line(nterm, tabSintaxe) :
+	aux = []
 	print("|",nterm,"|",end="")
 	for k in term.keys():
 #		print(term[k],"[",k,"]|",end="")
+		if term[k] != " ":
+			aux.append(term[k])
+		else:
+			aux.append('0')
 		print(term[k] + "|",end="")
 		term[k] = " "
+	tabSintaxe.append(aux)
 	print()
+
+def print_sintaxe_table(tabSintaxe):
+	for i in tabSintaxe:
+		print(i)
 
 def print_grammar():
 	for nterm in grammar.keys():
@@ -106,7 +116,7 @@ def follow(nterm):
 					else:
 						for k in first(derv[j + 1][1]):
 							if k not in res:
-								res.append(k)#
+								res.append(k)
 						if None in res or j == len(derv):
 							for k in follow(gkeys):
 								if k not in res:
@@ -119,19 +129,21 @@ def follow(nterm):
 
 def create_table():
 	producao = 1
+	tabSintaxe = []
 
 	for nterm in grammar.keys():
 		for derv in grammar[nterm]:
 			if derv:
-				for xxx in first(derv[0][1]):
-#					print(xxx)
-					term[xxx] = str(producao)
+				for corpoProd in first(derv[0][1]):
+#					print(corpoProd)
+					term[corpoProd] = str(producao)
 			else:
-				for xxx in follow(nterm):
-#					print(xxx)
-					term[xxx] = str(producao)
+				for corpoProd in follow(nterm):
+#					print(corpoProd)
+					term[corpoProd] = str(producao)
 			producao += 1
-		print_table_line(nterm)
+		print_table_line(nterm, tabSintaxe)
+	print_sintaxe_table(tabSintaxe)
 
 class ListTokens():
 	def __init__(self,tokens):
@@ -161,7 +173,6 @@ class ACPredictible():
 		self.token = ListTokens(tokens)
 		create_table()
 		
-
 
 #def derivation():
 #	for der in gram[nterm]:
