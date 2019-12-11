@@ -1,22 +1,7 @@
-# Faltam
+### Alunos
 
-* Analisador Sintatico (in progress ...)
-* Analisador Semantico
-* Gerador de Representação Intermediária
-
-# To Do
-
-* Implementar a gramatica
- - Provavelmente cada derivação sera uma função
- - Ex :
-          def derivar_I():
-            if tk.type == rwd and tk.attribute == programa :
-              proc_B
-            else
-              return False
-            return True
-* Implementar firts and follow
-* Implementar Analisador sintatico preditivo baseado em descida recursiva
+* Adriano Araújo
+* Gabriel Haddad	
 
 # Gramática
 * I &rightarrow; programa B
@@ -25,14 +10,94 @@
 * T &rightarrow; int |  char | real
 * C &rightarrow; se Ç entao B C | enquanto Ç B C | E C | £
 * Ç &rightarrow; ( X R X )
-* E &rightarrow; A ; | M ;
-* A &rightarrow; ident = X ;
-* M &rightarrow; ident O M | X
+* E &rightarrow; A ;
+* A &rightarrow; ident = M ;
+* M &rightarrow; X O M | X
 * O &rightarrow; + | - | * | /
-* X &rightarrow; ident | Const
+* X &rightarrow; ident | const
 * R &rightarrow; == | <> | >= | <= | > | <
 
-Obs.: Como a grámatica usada não possui recursão a esquerda, não foi necessário usar técnicas de remoção de recursão indereta/direta. Além disso a gramática não teve que passar por um processo de fatoração, não tem ambiguidade.
+# Tabela de Precedência e Associatividade de operadores
+
+| Operadores | Precedência | Associatividade |
+|:----------:|:-----------:|:---------------:|
+| + e -      | menor       | esquerda        |
+| * e \      | maior       | esquerda        |
+
+* M &rightarrow; X O M | X
+
+*Alteração da gramatica para precedência e associatividade*
+
+* M1 &rightarrow; M1 + M2 | M1 - M2 | M2
+* M2 &rightarrow; M2 * M  | M2 / M  | M
+* M  &rightarrow; (M1) | X
+
+*Remoção de recursão à esqueda*
+
+* M11 &rightarrow; M21 M12
+* M12 &rightarrow; + M21 M12 | - M21 M12 | £
+* M21 &rightarrow; M M22
+* M22 &rightarrow; * M M22 | / M M22 | £
+* M   &rightarrow; (M11) | X
+
+# Tabela de análise sintática
+
+|   |programa|inicio|fim|ident|int|char|real|se|entao|enquanto|= |const|+ |- | *|\ |==|<>|>=|<=|> |< |( | ) |; |$ |
+|:--|:-------|:-----|:--|:----|:--|:---|:---|:-|:----|:-------|:-|:----|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:-|:--|:-|:-|
+| I |1       |      |   |     |   |    |    |  |     |        |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| B |        |2     |   |     |   |    |    |  |     |        |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| D |        |      |4  |4    |3  |3   |3   |4 |     |4       |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |4 |
+| T |        |      |   |     |5  |6   |7   |  |     |        |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| C |        |      |11 |10   |   |    |    |8 |     |9       |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| CO|        |      |   |     |   |    |    |  |     |        |  |     |  |  |  |  |  |  |  |  |  |  |12|   |  |  |
+| E |        |      |   |13   |   |    |    |  |     |        |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| A |        |      |   |14   |   |    |    |  |     |        |  |     |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| M |        |      |   |16   |   |    |    |  |     |        |  |16   |  |  |  |  |  |  |  |  |  |  |15|   |  |  |
+|M11|        |      |   |17   |   |    |    |  |     |        |  |17   |  |  |  |  |  |  |  |  |  |  |17|   |  |  |
+|M12|        |      |   |     |   |    |    |  |     |        |  |     |18|19|  |  |  |  |  |  |  |  |  |20 |  |  |
+|M21|        |      |   |21   |   |    |    |  |     |        |  |21   |  |  |  |  |  |  |  |  |  |  |21|   |  |  |
+|M22|        |      |   |     |   |    |    |  |     |        |  |     |24|24|22|23|  |  |  |  |  |  |  |24 |  |  |
+| X |        |      |   |25   |   |    |    |  |     |        |  |26   |  |  |  |  |  |  |  |  |  |  |  |   |  |  |
+| R |        |      |   |     |   |    |    |  |     |        |  |     |  |  |  |  |27|28|30|29|32|31|  |   |  |  |
+
+
+
+#### Produções
+
+|Número | Produção                      |
+|:-----:|:------------------------------|
+|1      | I &rightarrow; programa B     |
+|2      | B &rightarrow; inicio D C fim |
+|3      | D &rightarrow; T ident ; D    |
+|4      | D &rightarrow; £              |
+|5      | T &rightarrow; int            |
+|6      | T &rightarrow; char           |
+|7      | T &rightarrow; real           |
+|8      | C &rightarrow; se Ç entao B C |
+|9      | C &rightarrow; enquanto Ç B C |
+|10     | C &rightarrow; E C            |
+|11     | C &rightarrow; £              |
+|12     | Ç &rightarrow; ( X R X )      |
+|13     | E &rightarrow; A ;            |
+|14     | A &rightarrow; ident = M      |
+|15     | M &rightarrow; X              |
+|16     | M &rightarrow; (M11)          |
+|17     |M11&rightarrow; M21 M12        |
+|18     |M12&rightarrow; + M21 M12      |
+|19     |M12&rightarrow; - M21 M12      |
+|20     |M12&rightarrow; £              |
+|21     |M21&rightarrow; M M22          |
+|22     |M22&rightarrow; * M M22        |
+|23     |M22&rightarrow; / M M22        |
+|24     |M22&rightarrow; £              |
+|25     | X &rightarrow; ident          |
+|26     | X &rightarrow; const          |
+|27     | R &rightarrow; ==             |
+|28     | R &rightarrow; <>             |
+|29     | R &rightarrow; >=             |
+|30     | R &rightarrow; <=             |
+|31     | R &rightarrow; >              |
+|32     | R &rightarrow; <              |
 
 # Tokens
 

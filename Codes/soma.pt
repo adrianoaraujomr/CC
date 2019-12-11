@@ -1,27 +1,5 @@
 programa
 	inicio
 		int  a;
-		real b;
-		char c;
-
 		a = 1;
-		b = 1,0;
-		c = 'oi';
-
-		a + b;
-		a - b;
-		a * b;
-		a \ b;
-
-		se(a == b)
-		entao
-			a >  1;
-			a >= 2;
-			a <  4;
-			a <= 3;
-
-		faca
-			c <> 'thau';
-		enquanto(c == 'oi');
-		para
 	fim
