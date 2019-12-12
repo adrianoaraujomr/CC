@@ -146,5 +146,6 @@ class Tokenizer():
 					print("Error at",line,col)
 
 			col += 1
+		tokens.append(Token("eof","$",line + 1,0))
 
 		return tokens
