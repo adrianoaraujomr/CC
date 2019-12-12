@@ -155,9 +155,10 @@ def isTerminal(caracter):
 def findNonTerminalByIndex(index):
 	count = 0
 	for k in grammar.keys():
-		if count == (index - 1):
-			return grammar[k]
-		count += 1
+		for i in grammar[k]:
+			if count == (index - 1):
+				return i
+			count += 1
 
 
 class ListTokens():
@@ -212,11 +213,9 @@ class ACPredictible():
 					#Printar Arvore Aqui!
 					stack.pop()
 					prod = findNonTerminalByIndex(int(nextProd))
-					print(prod)
-					for derv in prod:
-						if derv:
-							for terminals in reversed(derv):
-								stack.append(terminals[1])
+					if prod != []:
+						for derv in reversed(prod):
+							stack.append(derv[1])
 		if proxToken != '$':
 			print("Error 3!")
 		else:
