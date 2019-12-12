@@ -1,5 +1,5 @@
 programa
 	inicio
-		int  a;
+		int a;
 		a = 1;
 	fim

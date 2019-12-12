@@ -179,7 +179,10 @@ class ListTokens():
 
 	def next(self):
 		if self.current < len(self.tk_list) - 1:
-			token = self.tk_list[self.current].attribute
+			if self.tk_list[self.current].name == 'idt' or self.tk_list[self.current].name == 'cst':
+				token = self.tk_list[self.current].name
+			else:
+				token = self.tk_list[self.current].attribute
 			self.current += 1
 			return token
 		#print(self.tk_list[self.current - 1].attribute,"->",self.tk_list[self.current].attribute)
