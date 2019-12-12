@@ -50,6 +50,8 @@ term = {
 "$"        : " ",
 }
 
+tabSintaxe = []
+
 def print_table_line(nterm, tabSintaxe) :
 	aux = []
 	print("|",nterm,"|",end="")
@@ -129,7 +131,6 @@ def follow(nterm):
 
 def create_table():
 	producao = 1
-	tabSintaxe = []
 
 	for nterm in grammar.keys():
 		for derv in grammar[nterm]:
@@ -144,6 +145,20 @@ def create_table():
 			producao += 1
 		print_table_line(nterm, tabSintaxe)
 	print_sintaxe_table(tabSintaxe)
+
+def isTerminal(caracter):
+	for k in term.keys():
+		if caracter == k:
+			return True
+	return False
+
+def findNonTerminalByIndex(index):
+	count = 0
+	for k in grammar.keys():
+		if count == (index - 1):
+			return grammar[k]
+		count += 1
+
 
 class ListTokens():
 	def __init__(self,tokens):
@@ -163,8 +178,10 @@ class ListTokens():
 
 	def next(self):
 		if self.current < len(self.tk_list) - 1:
+			token = self.tk_list[self.current].attribute
 			self.current += 1
-		print(self.tk_list[self.current - 1].attribute,"->",self.tk_list[self.current].attribute)
+			return token
+		#print(self.tk_list[self.current - 1].attribute,"->",self.tk_list[self.current].attribute)
 
 class ACPredictible():
 
@@ -172,6 +189,42 @@ class ACPredictible():
 		print("\nSyntax Analyzer :\n")
 		self.token = ListTokens(tokens)
 		create_table()
+
+		stack = []
+		stack.append("I")
+		proxToken = self.token.next()
+
+		while stack:
+			top = stack[-1]
+			if isTerminal(top):
+				if top == proxToken:
+					stack.pop()
+					proxToken = self.token.next()
+				else:
+					print("Error 1!")
+					break
+			else:
+				nextProd = tabSintaxe[list(grammar).index(top)][list(term).index(proxToken)]
+				if nextProd == '0':
+					print("Error 2!")
+					break
+				else:
+					#Printar Arvore Aqui!
+					stack.pop()
+					prod = findNonTerminalByIndex(int(nextProd))
+					print(prod)
+					for derv in prod:
+						if derv:
+							for terminals in reversed(derv):
+								stack.append(terminals[1])
+		if proxToken != '$':
+			print("Error 3!")
+		else:
+			print("Cadeia Aceita") 
+		
+
+
+				
 		
 
 #def derivation():
