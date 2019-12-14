@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from lex import Token
+from my_tree import *
 
 # gram       = nterm -> [derivations]
 grammar = {
@@ -67,6 +68,7 @@ def print_table_line(nterm, tabSintaxe) :
 	print()
 
 def print_sintaxe_table(tabSintaxe):
+	print("\nSyntax Table :\n")
 	for i in tabSintaxe:
 		print(i)
 
@@ -128,6 +130,7 @@ def follow(nterm):
 	except:
 		pass
 	return res
+
 
 def create_table():
 	producao = 1
@@ -197,7 +200,9 @@ class ACPredictible():
 		stack = []
 		stack.append("I")
 		proxToken = self.token.next()
+		tree = SyntaxTree()
 
+		print("\nProducoes aplicadas :\n")
 		while stack:
 			top = stack[-1]
 			if isTerminal(top):
@@ -213,15 +218,22 @@ class ACPredictible():
 					print("Error 2!")
 					break
 				else:
+#					print(nextProd)
+#					print(findNonTerminalByIndex(int(nextProd)))
 					#Printar Arvore Aqui!
-					stack.pop()
+					letter = stack.pop()
 					prod = findNonTerminalByIndex(int(nextProd))
+
+					print(letter,prod)
+					tree.add_prod(letter,production=prod)
 					if prod != []:
 						for derv in reversed(prod):
 							stack.append(derv[1])
 		if proxToken != '$':
 			print("Error 3!")
 		else:
+			print("\nArvore pre ordem :\n")
+			tree.pre_ordem()
 			print("Cadeia Aceita") 
 		
 
