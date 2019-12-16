@@ -193,8 +193,10 @@ class ListTokens():
                 token = self.tk_list[self.current].name
             else:
                 token = self.tk_list[self.current].attribute
+            col = self.tk_list[self.current].col
+            line = self.tk_list[self.current].line
             self.current += 1
-            return token
+            return token, col, line
         #print(self.tk_list[self.current - 1].attribute,"->",self.tk_list[self.current].attribute)
 
 
@@ -207,7 +209,7 @@ class ACPredictible():
 
         stack = []
         stack.append("I")
-        proxToken = self.token.next()
+        proxToken, col, line = self.token.next()
         tree = SyntaxTree()
         errors = Errors()
 
@@ -217,18 +219,19 @@ class ACPredictible():
             if isTerminal(top):
                 if top == proxToken:
                     stack.pop()
-                    proxToken = self.token.next()
+                    proxToken, col, line = self.token.next()
                 else:
                     # No codigo-fonte, se tirar o ; do int a;
                     # Ele vai dizer que era esperado ; mas foi encontrado idt(o a da próxima linha)
                     print("Era esperado {} mas foi encontrado {}".format(
                         top, proxToken))
+                    print("Linha: {}, Coluna: {}".format(line, col))
                     return
             else:
                 nextProd = tabSintaxe[list(grammar).index(
                     top)][list(term).index(proxToken)]
                 if nextProd == '0':
-                    errors.errorsHandle(top, proxToken)
+                    errors.errorsHandle(top, proxToken, col, line)
                     return
                 else:
                     #					print(nextProd)
@@ -244,6 +247,7 @@ class ACPredictible():
                             stack.append(derv[1])
         if proxToken != '$':
             print("Simbolo de final de cadeia esperado!")
+            print("Linha: {}, Coluna: {}".format(line, col))
         else:
             print("\nArvore pre ordem :\n")
             tree.pre_ordem()
@@ -251,13 +255,15 @@ class ACPredictible():
 
 
 class Errors:
-    def errorsHandle(self, stackTop, proxToken):
+    def errorsHandle(self, stackTop, proxToken, col, line):
         if stackTop == "I" and proxToken != "programa":
             print("Era esperado 'programa' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "B" and proxToken != "inicio":
             print("Era esperado 'inicio' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "D" and (proxToken != "fim" or proxToken != "idt" or proxToken != "int"
@@ -265,12 +271,14 @@ class Errors:
                                 or proxToken != "enquanto" or proxToken != "$"):
 
             print("Era esperado 'fim','identificador','tipo','se','enquanto' ou final de cadeia mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "T" and (proxToken != "int"
                                 or proxToken != "char" or proxToken != "real"):
 
             print("Era esperado 'tipo: int, char ou real' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "C" and (proxToken != "fim" or proxToken != "idt" or proxToken != "se" \
@@ -278,21 +286,25 @@ class Errors:
 
             print(
                 "Era esperado 'fim','identificador','se' ou 'enquanto' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "CO" and proxToken != "(":
 
             print("Era esperado '(' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "E" and proxToken != "idt":
 
             print("Era esperado 'identificador' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "A" and proxToken != "idt":
 
             print("Era esperado 'identificador' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "M" and (proxToken != "idt" or proxToken != "cst"
@@ -300,6 +312,7 @@ class Errors:
 
             print(
                 "Era esperado 'identificador','constante' ou '(' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "M11" and (proxToken != "idt" or proxToken != "cst"
@@ -307,12 +320,14 @@ class Errors:
 
             print(
                 "Era esperado 'identificador','constante' ou '(' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "M12" and (proxToken != "+" or proxToken != "-"
                                   or proxToken != ")"):
 
             print("Era esperado '+','-' ou ')' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "M21" and (proxToken != "idt" or proxToken != "cst"
@@ -320,18 +335,21 @@ class Errors:
 
             print(
                 "Era esperado 'identificador','constante' ou '(' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "M22" and (proxToken != "+" or proxToken != "-"
                                   or proxToken != "*" or proxToken != "/" or proxToken != ")"):
 
             print("Era esperado '+','-','*','/' ou ')' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "X" and (proxToken != "idt" or proxToken != "cst"):
 
             print(
                 "Era esperado 'identificador' ou 'constante' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
         if stackTop == "R" and (proxToken != "==" or proxToken != "<>"
@@ -339,6 +357,7 @@ class Errors:
 
             print(
                 "Era esperado '==','<>','>=','<=','<' ou '>' mas foi achado", proxToken)
+            print("Linha: {}, Coluna: {}".format(line, col))
             return
 
 
